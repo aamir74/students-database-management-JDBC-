@@ -1,0 +1,808 @@
+4.1 CODE
+//student.java
+package jdbc;
+
+public class student {
+
+	
+	public int student_id;
+	public String f_name;
+	public String l_name;
+	public String dept_name;
+	public String class_name;
+	
+	
+	public int getStudent_id() {
+		return student_id;
+	}
+	public void setStudent_id(int student_id) {
+		this.student_id = student_id;
+	}
+	
+	public String getF_name() {
+		return f_name;
+	}
+	public void setF_name(String f_name) {
+		this.f_name = f_name;
+	}
+	
+	public String getL_name() {
+		return l_name;
+	}
+	public void setL_name(String l_name) {
+		this.l_name = l_name;
+	}
+	
+	public String getDept_name() {
+		return dept_name;
+	}
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
+	}
+	
+	public String getClass_name() {
+		return class_name;
+	}
+	public void setClass_name(String class_name) {
+		this.class_name = class_name;
+	}
+}
+
+//studentDemo.java
+package jdbc;
+import java.io.IOException;
+
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+public  class studentDemo {
+	 	Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		departmentDemo dd = new departmentDemo();
+		ClassDemo c = new ClassDemo();
+		
+		
+		// Object creation
+		studentDemo sd = new studentDemo();
+		
+		Scanner sc = new Scanner(System.in);
+		
+		int ch,ch1,ch2,ch3,ch4;
+		System.out.println("\t\tWELCOME TO STUDENT'S DATA MANAGEMENT SYSTEM:\n");
+
+		do {
+
+			System.out.println("Enter Your Choice :");
+			System.out.println("1. Insert The Data :");
+			System.out.println("2. Display The Records :");
+			System.out.println("3. Update the records :");
+			System.out.println("4. Delete The record :");
+			System.out.println("5. Exit");
+			
+			ch = sc.nextInt();
+			
+			
+			switch(ch) {
+			case 1:	
+				System.out.println("\n\n1::STUDENT\n2::DEPARTMENT\n3::CLASS \n\n::4BACK TO JDBC MENU");
+						
+				System.out.println("\nPLEASE ENTER YOUR CHOICE");
+				ch1= sc.nextInt();
+
+				switch (ch1){
+				case 1: sd.insertData();
+				break;
+				
+				case 2: dd.insertDeptData();
+
+				break;
+				
+				case 3: c.insertClassData();
+				break;
+				
+				case 4:
+				break;
+				
+			    default:
+				break;}
+			break;
+				
+			case 2:
+				
+				System.out.println("\n\n1::STUDENT\n2::DEPARTMENT\n3::CLASS \n\n7::BACK TO JDBC MENU");
+				
+				System.out.println("\nPLEASE ENTER YOUR CHOICE");
+				ch2= sc.nextInt();
+
+				switch (ch2){
+				case 1: sd.displayData();
+				break;
+				
+				case 2: dd.displayDeptData();
+				break;
+				
+				case 3: c.displayClassData();
+				break;
+				
+				case 4:
+					System.out.println("");
+					break;
+
+				
+				
+			        default:
+					break;}
+				
+				break;
+			case 3:
+				System.out.println("\n\n1::STUDENT\n2::DEPARTMENT\n3::CLASS\n 4::BACK TO JDBC MENU");
+				
+				System.out.println("\nPLEASE ENTER YOUR CHOICE");
+				ch3= sc.nextInt();
+
+				switch (ch3){
+				case 1: sd.updateData();
+				break;
+				
+				case 2: dd.updateDeptData();
+				break;
+				
+				case 3: c.updateClassData();
+				break;
+				
+				case 4:
+				break;
+				
+			    default:
+				break;}
+				
+			break;
+			case 4:
+				System.out.println("\n\n1::STUDENT\n2::DEPARTMENT\n3::CLASS \n\n7::BACK TO JDBC MENU");
+				
+				System.out.println("\nPLEASE ENTER YOUR CHOICE");
+				ch4= sc.nextInt();
+
+				switch (ch4){
+				case 1: sd.deleteData();
+				break;
+				
+				case 2: dd.deleteDeptData();
+				break;
+				
+				case 3: c.deleteClassData();
+				break;
+				
+				case 4:
+				break;
+				
+			    default:
+				break;}
+				
+				
+			break;
+			case 5:
+				System.out.println("Thank you for visiting us..!");
+				break;
+				
+			 default:
+				 break;
+			}
+			
+		}while(ch!= 5);
+		
+	}
+	
+	public static Connection getConnect() throws SQLException {
+		try {
+		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+		Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/student?useSSL=false","root","root");
+		return con;
+		
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	public void deleteData() {
+		try {
+			int id;
+			System.out.println("Enter the record no. to delete :");
+			id = sc.nextInt();
+			student s = new student();
+			s.setStudent_id(id);
+		
+
+			Connection con = getConnect();
+			String query = "delete from student where student_id=?";
+			
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, id);
+
+			int x=pst.executeUpdate();
+			if(x==1) {
+				System.out.println("Record deleted.");
+			}else {
+				System.out.println("Record not found. ");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void updateData() {
+		
+		student s = new student();
+
+		  System.out.println("Enter the student id / no :"); 
+		  int i = sc.nextInt();
+		  s.setStudent_id(i);
+		  
+
+
+		System.out.println("Enter the First name of Student :");
+		String sfname = sc.next();
+		s.setF_name(sfname);
+		
+		System.out.println("Enter the Last name of Student :");
+		String slname = sc.next();
+		s.setL_name(slname);
+		
+		System.out.println("Enter the DEPARTMENT of Student :");
+		String sdept = sc.next();
+		s.setDept_name(sdept);
+		
+		System.out.println("Enter the CLASS of Student :");
+		String sclass = sc.next();
+		s.setClass_name(sclass);
+		
+		
+		try {
+
+			Connection con = getConnect();
+			String query = "update student set  f_name=?, l_name=?, dept_name=?, class_name=? where student_id=?";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			
+			pst.setString(1, s.getF_name());
+			pst.setString(2, s.getL_name());
+			pst.setString(3, s.getDept_name());
+			pst.setString(4, s.getClass_name());
+			pst.setInt(5, s.getStudent_id());
+			
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+			
+			if(x==1) {
+				System.out.println("Successfully updated ." );
+			}else {
+				System.out.println("Record not Found.");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void displayData() {
+		try {
+			Connection con = getConnect();
+			String query = "select * from student";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			
+			ResultSet rs = pst.executeQuery();
+
+			System.out.println("STUDENT_ID\tFIRST _NAME\tLAST_NAME\tDEPARTMENT_NAME\t\tCLASS NAME");
+			while(rs.next()) {
+				System.out.println("   "+rs.getInt(1)+"\t\t "+rs.getString(2)+" \t\t"+rs.getString(3)+" \t\t "+rs.getString(4)+"\t  \t\t"+rs.getString(5));
+				
+			}rs.close();
+			pst.close();
+			con.close();
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private void insertData() {
+		// TODO Auto-generated method stub
+		student s = new student();
+
+		System.out.println("Enter Student id : ");
+		int sid = sc.nextInt();
+		s.setStudent_id(sid);
+
+		System.out.println("Enter first name of Student : ");
+		String fname = sc.next();
+		s.setF_name(fname);
+		
+		System.out.println("Enter last name of Student : ");
+		String lname = sc.next();
+		s.setL_name(lname);
+		
+		System.out.println("Enter DEPARTMENT of student : ");
+		String dept = sc.next();
+		s.setDept_name(dept);
+		
+		System.out.println("Enter CLASS NAME of student : ");
+		String clname = sc.next();
+		s.setClass_name(clname);
+
+
+		try {
+			Connection con = getConnect();
+			String query = "insert into student (student_id,f_name,l_name,dept_name,class_name)values(?,?,?,?,?)";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, s.getStudent_id());
+			pst.setString(2, s.getF_name());
+			pst.setString(3, s.getL_name());
+			pst.setString(4, s.getDept_name());
+			pst.setString(5, s.getClass_name());
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+
+			if(x==1) {
+				System.out.println("Record Inserted Successfully.");
+			}else {
+				System.out.println("Something Error while Inserting Record");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+//dept.java
+package jdbc;
+public class dept {
+
+	
+		 public int dept_id;
+		 public String dept_name;
+		 public int student_id;
+		 public String hod_name;
+
+		 public int getDept_id() {
+				return dept_id;
+			}
+			public void setDept_id(int dept_id) {
+				this.dept_id = dept_id;
+			}
+			
+			public String getDept_name1() {
+				return dept_name;
+			}
+			public void setDept_name1(String dept_name) {
+				this.dept_name = dept_name;
+			}
+			
+			public int getStudent_id() {
+				return student_id;
+			}
+			public void setStudent_id(int student_id) {
+				this.student_id = student_id;
+			}
+			
+			public String getHod_name() {
+				return hod_name;
+			}
+			public void setHod_name(String hod_name) {
+				this.hod_name = hod_name;
+			}
+			}
+
+//deptDemo.java
+package jdbc;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+public class departmentDemo {
+
+	Scanner sc = new Scanner(System.in);
+	
+	public static Connection getConnect() throws SQLException {
+		try {
+		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+		Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/student?useSSL=false","root","root");
+		return con;
+		
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	
+	public void insertDeptData() {
+		// TODO Auto-generated method stub
+		dept d = new dept();
+
+		System.out.println("Enter DEPARTMENT ID : ");
+		int did = sc.nextInt();
+		d.setDept_id(did);
+
+		System.out.println("Enter DEPARTMENT NAME : ");
+		String dname = sc.next();
+		d.setDept_name1(dname);
+		
+		System.out.println("Enter the student id  :"); 
+		  int i = sc.nextInt();
+		  d.setStudent_id(i);
+		
+		System.out.println("Enter HOD NAME : ");
+		String hodname = sc.next();
+		d.setHod_name(hodname);
+		
+		try {
+			Connection con = getConnect();
+			String query = "insert into dept (dept_id,dept_name,student_id,hod_name)values(?,?,?,?)";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, d.getDept_id());
+			pst.setString(2, d.getDept_name1());
+			pst.setInt(3, d.getStudent_id());
+			pst.setString(4, d.getHod_name());
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+
+			if(x==1) {
+				System.out.println("Record Inserted Successfully.");
+			}else {
+				System.out.println("Something Error while Inserting Record");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+public void updateDeptData() {
+		
+		dept d = new dept();
+
+		  System.out.println("Enter the DEPT ID  no. :"); 
+		  int i = sc.nextInt();
+		  d.setDept_id(i);
+		  
+
+
+		System.out.println("Enter the DEPARTMENT NAME :");
+		String dname = sc.next();
+		d.setDept_name1(dname);
+		
+		
+				
+		System.out.println("Enter the student id  :"); 
+		  int j = sc.nextInt();
+		  d.setStudent_id(j);
+		
+		System.out.println("Enter HOD NAME : ");
+		String hodname = sc.next();
+		d.setHod_name(hodname);
+		
+		try {
+
+			Connection con = getConnect();
+			String query = "update dept set   dept_name=?, student_id=?, hod_name=? where dept_id=?";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setString(1, d.getDept_name1());
+			pst.setInt(2, d.getStudent_id());
+			pst.setString(3, d.getHod_name());
+			pst.setInt(4, d.getDept_id());
+
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+			
+			if(x==1) {
+				System.out.println("Successfully updated ." );
+			}else {
+				System.out.println("Record not Found.");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void displayDeptData() {
+		try {
+			Connection con = getConnect();
+			String query = "select * from dept";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			
+			ResultSet rs = pst.executeQuery();
+
+			System.out.println("DEPARTMENT_ID\tDEPARTMENT _NAME\tSTUDENT_ID\tHOD_NAME");
+
+			while(rs.next()) {
+
+				System.out.println("\t"+rs.getInt(1)+"\t\t"+rs.getString(2)+"\t\t "+rs.getInt(3)+" \t\t"+rs.getString(4));
+				
+			}rs.close();
+			pst.close();
+			con.close();
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+	public  void deleteDeptData() {
+		try {
+			int id;
+			System.out.println("Enter the record no. to delete :");
+			id = sc.nextInt();
+			dept d = new dept();
+			d.setDept_id(id);
+		
+
+			Connection con = getConnect();
+			String query = "delete from dept where dept_id=?";
+			
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, id);
+
+			int x=pst.executeUpdate();
+			if(x==1) {
+				System.out.println("Record deleted.");
+			}else {
+				System.out.println("Record not found. ");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+
+//Class.java
+package jdbc;
+
+public class Class {
+	public int class_id;
+	 public String class_name;
+	 public int student_id;
+	 public int no_students;
+	 public String mentor_name;
+
+	 public int getClass_id() {
+			return class_id;
+		}
+		public void setClass_id(int class_id) {
+			this.class_id = class_id;
+		}
+		
+		public String getClass_name() {
+			return class_name;
+		}
+		public void setClass_name(String class_name) {
+			this.class_name = class_name;
+		}
+		
+		public int getStudent_id() {
+			return student_id;
+		}
+		public void setStudent_id(int student_id) {
+			this.student_id = student_id;
+		}
+		
+		public int getNo_students() {
+			return no_students;
+		}
+		public void setNo_students(int no_students) {
+			this.no_students = no_students;
+		}
+		
+		public String getMentor_name() {
+			return mentor_name;
+		}
+		public void setMentor_name(String mentor_name) {
+			this.mentor_name = mentor_name;
+		}
+		}
+
+//ClassDemo.java
+package jdbc;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Scanner;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+public class ClassDemo {
+
+	Scanner sc = new Scanner(System.in);
+	
+	public static Connection getConnect() throws SQLException {
+		try {
+		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+		Connection con = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/student?useSSL=false","root","root");
+		return con;
+		
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	
+	public void insertClassData() {
+		// TODO Auto-generated method stub
+		Class c = new Class();
+
+		System.out.println("Enter CLASS ID : ");
+		int cid = sc.nextInt();
+		c.setClass_id(cid);
+
+		System.out.println("Enter Class NAME : ");
+		String cname = sc.next();
+		c.setClass_name(cname);
+		
+		System.out.println("Enter the student id  :"); 
+		  int i = sc.nextInt();
+		  c.setStudent_id(i);
+		  
+		  System.out.println("Enter the no. students in class  :"); 
+		  int j = sc.nextInt();
+		  c.setNo_students(j);
+		  
+		System.out.println("Enter MENTOR NAME : ");
+		String mname = sc.next();
+		c.setMentor_name(mname);
+		
+		try {
+			Connection con = getConnect();
+			String query = "insert into class (class_id,class_name,student_id,no_students,mentor_name)values(?,?,?,?,?)";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, c.getClass_id());
+			pst.setString(2, c.getClass_name());
+			pst.setInt(3, c.getStudent_id());
+			pst.setInt(4, c.getNo_students());
+			pst.setString(5, c.getMentor_name());
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+
+			if(x==1) {
+				System.out.println("Record Inserted Successfully.");
+			}else {
+				System.out.println("Something Error while Inserting Record");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+public void updateClassData() {
+		
+		Class c = new Class();
+
+		  System.out.println("Enter the CLASS ID  no. :"); 
+		  int i = sc.nextInt();
+		  c.setClass_id(i);
+		  
+
+
+		System.out.println("Enter the CLASS NAME :");
+		String cname = sc.next();
+		c.setClass_name(cname);
+		
+		
+				
+		System.out.println("Enter the student id  :"); 
+		  int j = sc.nextInt();
+		  c.setStudent_id(j);
+		  
+		  System.out.println("Enter the no. of students in class :"); 
+		  int n = sc.nextInt();
+		  c.setNo_students(n);
+		
+		System.out.println("Enter MENTOR NAME : ");
+		String mname = sc.next();
+		c.setMentor_name(mname);
+		
+		try {
+
+			Connection con = getConnect();
+			String query = "update class set   class_name=?, student_id=?, no_students=?, mentor_name=? where class_id=?";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setString(1, c.getClass_name());
+			pst.setInt(2, c.getStudent_id());
+			pst.setInt(3, c.getNo_students());
+			pst.setString(4, c.getMentor_name());
+			pst.setInt(5, c.getClass_id());
+
+
+			int x = pst.executeUpdate();
+			pst.close();
+			con.close();
+			
+			if(x==1) {
+				System.out.println("Successfully updated ." );
+			}else {
+				System.out.println("Record not Found.");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void displayClassData() {
+		try {
+			Connection con = getConnect();
+			String query = "select * from class";
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			
+			ResultSet rs = pst.executeQuery();
+
+			System.out.println("CLASS_ID\tCLASS _NAME\tSTUDENT_ID\tNO. OF STUDENTS\t  MENTOR_NAME");
+
+			while(rs.next()) {
+				System.out.println(" "+rs.getInt(1)+" \t\t"+rs.getString(2)+"\t\t "+rs.getInt(3)+"\t\t   "+rs.getInt(4)+"\t\t  "+rs.getString(5));
+				
+			}rs.close();
+			pst.close();
+			con.close();
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+	public  void deleteClassData() {
+		try {
+			int id;
+			System.out.println("Enter the CLASS ID no. to delete :");
+			id = sc.nextInt();
+			Class c = new Class();
+			c.setClass_id(id);
+		
+
+			Connection con = getConnect();
+			String query = "delete from class where class_id=?";
+			
+			PreparedStatement pst = (PreparedStatement) con.prepareStatement(query);
+			pst.setInt(1, id);
+
+			int x=pst.executeUpdate();
+			if(x==1) {
+				System.out.println("Record deleted.");
+			}else {
+				System.out.println("Record not found. ");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
